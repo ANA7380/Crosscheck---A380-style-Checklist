@@ -16,6 +16,10 @@ A reusable checklist (TODO) app for React Native, styled after the Airbus A380 E
 - [Node.js](https://nodejs.org/) 18+
 - [Expo Go](https://expo.dev/go) SDK 54 on your phone, or Android Studio / Xcode for emulators
 
+## APK Install
+- Download and install the `Install.apk`
+
+
 ## Setup
 
 ```bash
@@ -32,6 +36,7 @@ Scan the QR code with Expo Go (Android) or the Camera app (iOS), or press `a` fo
 npx expo prebuild
 npx expo run:android
 ```
+
 
 ## Project structure
 
@@ -53,3 +58,13 @@ src/
 | Unchecked / text  | `#2BE0F9` |
 | Checked           | `#39FF14` |
 | Amber (warnings)  | `#FFB000` |
+
+
+---
+
+## Future Updates
+
+1. Better scrolling in editing long checklist
+2. Delete checklist confirmation
+3. Export Import function
+4. Better icon
