@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -34,6 +34,13 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [pendingChecklistId, setPendingChecklistId] = useState<string | null>(null);
+  const [clock, setClock] = useState(() => new Date().toLocaleTimeString());
+
+  useEffect(() => {
+    const tick = () => setClock(new Date().toLocaleTimeString());
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const handleSelectChecklist = (id: string) => {
     setMenuOpen(false);
@@ -107,10 +114,12 @@ export default function App() {
           )}
         </View>
 
-        <View style={styles.footerStrip}>
-          <Text style={styles.footerText}>SYS · NORM</Text>
-          <Text style={styles.footerText}>CHK · {new Date().toLocaleTimeString()}</Text>
-        </View>
+        <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.footerSafe}>
+          <View style={styles.footerStrip}>
+            <Text style={styles.footerText}>SYS · NORM</Text>
+            <Text style={styles.footerText}>CHK · {clock}</Text>
+          </View>
+        </SafeAreaView>
 
         <SideMenu
           visible={menuOpen}
@@ -209,14 +218,16 @@ const styles = StyleSheet.create({
     ...textStyles.small,
     color: ECAM.dimCyan,
   },
-  footerStrip: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+  footerSafe: {
     borderTopWidth: 1,
     borderTopColor: ECAM.dimCyan,
     backgroundColor: ECAM.panelBg,
+  },
+  footerStrip: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 32,
+    paddingVertical: 10,
   },
   footerText: {
     ...textStyles.small,
