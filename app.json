@@ -21,6 +21,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.crosscheck.a380checklist"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "31e018d1-3328-4b95-84d2-b4ba34d60a3b"
+      }
     }
   }
 }
