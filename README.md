@@ -61,10 +61,15 @@ src/
 
 
 ---
+## Updates
+
+### 2026.6.15
+
+1. Better Scrolling, all info displays above keyboard
+2. Delete checklist confirmation added
+3. Import Export feature added
+4. Switching checklist can choose to keep or reset checked items.
+
 
 ## Future Updates
-
-1. Better scrolling in editing long checklist
-2. Delete checklist confirmation
-3. Export Import function
-4. Better icon
+1. Better icon

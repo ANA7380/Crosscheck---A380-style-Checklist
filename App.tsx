@@ -7,6 +7,9 @@ import {
   View,
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import * as DocumentPicker from 'expo-document-picker';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ChecklistItemRow } from './src/components/ChecklistItemRow';
 import { ConfirmDialog } from './src/components/ConfirmDialog';
@@ -24,11 +27,13 @@ export default function App() {
     activeChecklist,
     toggleItem,
     resetChecklist,
+    setActiveChecklist,
     addChecklist,
     deleteChecklist,
     renameChecklist,
     addItem,
     removeItem,
+    importState,
   } = useChecklists();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,8 +60,50 @@ export default function App() {
     setPendingChecklistId(null);
   };
 
+  const handleKeepItems = () => {
+    if (pendingChecklistId) {
+      setActiveChecklist(pendingChecklistId);
+    }
+    setPendingChecklistId(null);
+  };
+
   const handleCancelReset = () => {
     setPendingChecklistId(null);
+  };
+
+  const handleExportData = async () => {
+    if (!state) return;
+    try {
+      const json = JSON.stringify(state, null, 2);
+      const file = new File(Paths.cache, 'crosscheck_export.json');
+      file.write(json);
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(file.uri);
+      }
+    } catch (e) {
+      console.error('Export failed', e);
+    }
+  };
+
+  const handleImportData = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/json', 'text/plain', '*/*'],
+      });
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const fileUri = result.assets[0].uri;
+        const file = new File(fileUri);
+        const content = await file.text();
+        const data = JSON.parse(content);
+        if (data.checklists && typeof data.activeChecklistId === 'string') {
+          importState(data);
+          setMenuOpen(false);
+          setEditMode(false);
+        }
+      }
+    } catch (e) {
+      console.error('Import failed', e);
+    }
   };
 
   if (loading || !state || !activeChecklist) {
@@ -138,15 +185,19 @@ export default function App() {
           onRenameChecklist={renameChecklist}
           onAddItem={addItem}
           onRemoveItem={removeItem}
+          onExportData={handleExportData}
+          onImportData={handleImportData}
         />
 
         <ConfirmDialog
           visible={pendingChecklistId !== null}
-          title="RESET CONFIRMATION"
-          message="Confirm Reset for Next Flight?"
+          title="SWITCH CHECKLIST"
+          message="Do you want to keep current checked items or reset them?"
           confirmLabel="RESET"
+          thirdLabel="KEEP"
           cancelLabel="CANCEL"
           onConfirm={handleConfirmReset}
+          onThird={handleKeepItems}
           onCancel={handleCancelReset}
         />
       </SafeAreaView>

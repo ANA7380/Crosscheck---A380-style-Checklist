@@ -154,6 +154,13 @@ export function useChecklists() {
     [update],
   );
 
+  const importState = useCallback(
+    (newState: AppState) => {
+      update(() => newState);
+    },
+    [update]
+  );
+
   const activeChecklist =
     state?.checklists.find((cl) => cl.id === state.activeChecklistId) ?? null;
 
@@ -169,5 +176,6 @@ export function useChecklists() {
     renameChecklist,
     addItem,
     removeItem,
+    importState,
   };
 }

@@ -9,8 +9,10 @@ interface ConfirmDialogProps {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  thirdLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  onThird?: () => void;
 }
 
 export function ConfirmDialog({
@@ -19,8 +21,10 @@ export function ConfirmDialog({
   message,
   confirmLabel = 'CONFIRM',
   cancelLabel = 'CANCEL',
+  thirdLabel,
   onConfirm,
   onCancel,
+  onThird,
 }: ConfirmDialogProps) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
@@ -33,6 +37,11 @@ export function ConfirmDialog({
             <Pressable style={styles.button} onPress={onCancel}>
               <Text style={styles.cancelText}>{cancelLabel}</Text>
             </Pressable>
+            {thirdLabel && onThird && (
+              <Pressable style={[styles.button, styles.thirdButton]} onPress={onThird}>
+                <Text style={styles.thirdText}>{thirdLabel}</Text>
+              </Pressable>
+            )}
             <Pressable style={[styles.button, styles.confirmButton]} onPress={onConfirm}>
               <Text style={styles.confirmText}>{confirmLabel}</Text>
             </Pressable>
@@ -91,6 +100,9 @@ const styles = StyleSheet.create({
   confirmButton: {
     borderColor: ECAM.amber,
   },
+  thirdButton: {
+    borderColor: ECAM.cyan,
+  },
   cancelText: {
     ...textStyles.small,
     color: ECAM.cyan,
@@ -98,5 +110,9 @@ const styles = StyleSheet.create({
   confirmText: {
     ...textStyles.small,
     color: ECAM.amber,
+  },
+  thirdText: {
+    ...textStyles.small,
+    color: ECAM.cyan,
   },
 });
