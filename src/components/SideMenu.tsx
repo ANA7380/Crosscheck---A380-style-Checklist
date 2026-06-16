@@ -26,6 +26,8 @@ interface SideMenuProps {
   onRenameChecklist: (id: string, name: string) => void;
   onAddItem: (checklistId: string, label: string) => void;
   onRemoveItem: (checklistId: string, itemId: string) => void;
+  onExportData: () => void;
+  onImportData: () => void;
 }
 
 export function SideMenu({
@@ -42,6 +44,8 @@ export function SideMenu({
   onRenameChecklist,
   onAddItem,
   onRemoveItem,
+  onExportData,
+  onImportData,
 }: SideMenuProps) {
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -95,6 +99,14 @@ export function SideMenu({
                   <Pressable style={styles.editButton} onPress={onEnterEditMode}>
                     <Text style={styles.editButtonText}>EDIT CHECKLISTS</Text>
                   </Pressable>
+                  <View style={styles.dataActions}>
+                    <Pressable style={[styles.editButton, styles.dataButton]} onPress={onExportData}>
+                      <Text style={[styles.editButtonText, styles.dataButtonText]}>EXPORT</Text>
+                    </Pressable>
+                    <Pressable style={[styles.editButton, styles.dataButton]} onPress={onImportData}>
+                      <Text style={[styles.editButtonText, styles.dataButtonText]}>IMPORT</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </>
             )}
@@ -197,5 +209,17 @@ const styles = StyleSheet.create({
   editButtonText: {
     ...textStyles.small,
     color: ECAM.amber,
+  },
+  dataActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 12,
+  },
+  dataButton: {
+    flex: 1,
+    borderColor: ECAM.cyan,
+  },
+  dataButtonText: {
+    color: ECAM.cyan,
   },
 });

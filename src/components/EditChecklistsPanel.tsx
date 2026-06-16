@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,6 +12,7 @@ import {
 import { Checklist } from '../types/checklist';
 import { ECAM } from '../theme/colors';
 import { textStyles } from '../theme/typography';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface EditChecklistsPanelProps {
   checklists: Checklist[];
@@ -35,6 +38,7 @@ export function EditChecklistsPanel({
   );
   const [newListName, setNewListName] = useState('');
   const [newItemLabels, setNewItemLabels] = useState<Record<string, string>>({});
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const handleAddList = () => {
     if (!newListName.trim()) return;
@@ -49,8 +53,18 @@ export function EditChecklistsPanel({
     setNewItemLabels((prev) => ({ ...prev, [checklistId]: '' }));
   };
 
+  const handleDeleteConfirm = () => {
+    if (pendingDeleteId) {
+      onDeleteChecklist(pendingDeleteId);
+    }
+    setPendingDeleteId(null);
+  };
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable onPress={onBack} style={styles.backButton}>
           <Text style={styles.backText}>← BACK</Text>
@@ -134,7 +148,7 @@ export function EditChecklistsPanel({
 
                   <Pressable
                     style={styles.deleteListButton}
-                    onPress={() => onDeleteChecklist(cl.id)}
+                    onPress={() => setPendingDeleteId(cl.id)}
                   >
                     <Text style={styles.deleteListText}>DELETE CHECKLIST</Text>
                   </Pressable>
@@ -144,7 +158,17 @@ export function EditChecklistsPanel({
           );
         })}
       </ScrollView>
-    </View>
+
+      <ConfirmDialog
+        visible={pendingDeleteId !== null}
+        title="DELETE CHECKLIST"
+        message="Are you sure you want to delete this checklist?"
+        confirmLabel="DELETE"
+        cancelLabel="CANCEL"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setPendingDeleteId(null)}
+      />
+    </KeyboardAvoidingView>
   );
 }
 
