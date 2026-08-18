@@ -73,3 +73,5 @@ src/
 
 ## Future Updates
 1. Better icon
+2. When item is checked, automatically place the checked items to the bottom of the checklist. Keeping the unchecked items on the top of the list
+3. Simplified Chinese interface
